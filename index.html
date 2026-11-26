@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Між нами, дівчатами ✨ | Картки для душі та сміху</title>
+  <!-- Підключення Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Підключення вишуканих шрифтів з Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Tone.js для ніжних магічних звуків картки та перемикання -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+  <style>
+    /* Змінні теми: Світла ("Ранкова кава та півонії") та Темна ("Свічки та вино") */
+    :root {
+      --bg-base: #fdf8f5;
+      --bg-gradient-1: #fcebe6;
+      --bg-gradient-2: #f5e2e4;
+      --bg-gradient-3: #f9eedc;
+      --card-bg: rgba(255, 255, 255, 0.82);
+      --card-border: rgba(212, 163, 149, 0.45);
+      --card-shadow: 0 24px 60px -15px rgba(138, 86, 78, 0.16), 0 8px 20px -8px rgba(138, 86, 78, 0.08);
+      --text-primary: #3e2723;
+      --text-secondary: #7a5852;
+      --text-muted: #a6857e;
+      --accent-rose: #c97b84;
+      --accent-gold: #c89d66;
+      --pill-bg: rgba(201, 123, 132, 0.12);
+      --glass-panel: rgba(255, 255, 255, 0.65);
+      --deck-back: linear-gradient(135deg, #f3d5d8 0%, #e7c2ba 50%, #dfba9c 100%);
+    }
+
+    body.wine-mode {
+      --bg-base: #1c1114;
+      --bg-gradient-1: #2d181e;
+      --bg-gradient-2: #24131a;
+      --bg-gradient-3: #36201c;
+      --card-bg: rgba(43, 25, 31, 0.84);
+      --card-border: rgba(224, 178, 133, 0.35);
+      --card-shadow: 0 28px 70px -12px rgba(0, 0, 0, 0.65), 0 0 35px rgba(201, 123, 132, 0.12);
+      --text-primary: #f9ece8;
+      --text-secondary: #dec2bc;
+      --text-muted: #a88782;
+      --accent-rose: #e3969f;
+      --accent-gold: #e0b285;
+      --pill-bg: rgba(227, 150, 159, 0.16);
+      --glass-panel: rgba(43, 25, 31, 0.62);
+      --deck-back: linear-gradient(135deg, #4d2530 0%, #3a1c25 50%, #573429 100%);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      transition: background-color 0.7s ease, color 0.5s ease;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    .font-serif-elegant {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+
+    /* Живі акварельні плями на фоні */
+    .ambient-blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(85px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.75;
+      transition: background 0.8s ease;
+      animation: floatBlob 18s infinite alternate ease-in-out;
+    }
+
+    .blob-1 {
+      width: 45vw;
+      height: 45vw;
+      max-width: 520px;
+      max-height: 520px;
+      top: -10%;
+      left: -8%;
+      background: var(--bg-gradient-1);
+    }
+
+    .blob-2 {
+      width: 50vw;
+      height: 50vw;
+      max-width: 580px;
+      max-height: 580px;
+      bottom: -12%;
+      right: -10%;
+      background: var(--bg-gradient-2);
+      animation-delay: -6s;
+    }
+
+    .blob-3 {
+      width: 38vw;
+      height: 38vw;
+      max-width: 420px;
+      max-height: 420px;
+      top: 40%;
+      left: 55%;
+      background: var(--bg-gradient-3);
+      animation-delay: -11s;
+    }
+
+    @keyframes floatBlob {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(25px, -20px) scale(1.06); }
+      100% { transform: translate(-20px, 25px) scale(0.96); }
+    }
+
+    /* Скляні панелі */
+    .glass-panel {
+      background: var(--glass-panel);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      transition: all 0.4s ease;
+    }
+
+    /* 3D-сцена для картки */
+    .card-stage {
+      perspective: 1400px;
+    }
+
+    .playing-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1.5px solid var(--card-border);
+      box-shadow: var(--card-shadow);
+      transform-style: preserve-3d;
+      transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease, background 0.6s ease, border-color 0.6s ease;
+      position: relative;
+    }
+
+    /* Тонка внутрішня декоративна рамка картки */
+    .playing-card::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      pointer-events: none;
+      opacity: 0.75;
+    }
+
+    /* Анімація витягування нової картки */
+    .card-draw-out {
+      transform: translateY(-28px) rotate(-4deg) scale(0.94);
+      opacity: 0;
+    }
+
+    .card-draw-in {
+      animation: cardAppear 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes cardAppear {
+      0% {
+        opacity: 0;
+        transform: translateY(34px) rotate(3deg) scale(0.93);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg) scale(1);
+      }
+    }
+
+    /* Підкладка стопки карток позаду */
+    .deck-stack-1 {
+      position: absolute;
+      inset: 0;
+      border-radius: 26px;
+      background: var(--deck-back);
+      opacity: 0.42;
+      transform: rotate(-3.2deg) translate(-8px, 6px);
+      z-index: -1;
+      border: 1px solid var(--card-border);
+      transition: transform 0.4s ease;
+    }
+
+    .deck-stack-2 {
+      position: absolute;
+      inset: 0;
+      border-radius: 26px;
+      background: var(--deck-back);
+      opacity: 0.25;
+      transform: rotate(2.8deg) translate(9px, 9px);
+      z-index: -2;
+      border: 1px solid var(--card-border);
+      transition: transform 0.4s ease;
+    }
+
+    .card-wrapper:hover .deck-stack-1 {
+      transform: rotate(-4.5deg) translate(-12px, 8px);
+    }
+    .card-wrapper:hover .deck-stack-2 {
+      transform: rotate(4deg) translate(13px, 11px);
+    }
+
+    /* Сяйво для особливих карток "Ізюм / Тост" */
+    .special-card-glow {
+      box-shadow: 0 24px 65px -10px rgba(200, 157, 102, 0.38), 0 0 30px rgba(201, 123, 132, 0.25) !important;
+      border-color: var(--accent-gold) !important;
+    }
+
+    /* Кнопки з ніжним градієнтом */
+    .btn-primary-soft {
+      background: linear-gradient(135deg, #d6858e 0%, #c4737d 50%, #c89666 100%);
+      color: #fffaf8;
+      box-shadow: 0 10px 25px -6px rgba(196, 115, 125, 0.45);
+      transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .btn-primary-soft:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px -5px rgba(196, 115, 125, 0.55);
+      filter: brightness(1.04);
+    }
+
+    .btn-primary-soft:active {
+      transform: translateY(1px) scale(0.98);
+    }
+
+    /* Плавна поява модального вікна */
+    .modal-backdrop {
+      background: rgba(24, 14, 17, 0.55);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    /* Міні-іскри при відкритті особливої картки */
+    .sparkle-particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 60;
+      animation: sparkleFloat 1.4s ease-out forwards;
+    }
+
+    @keyframes sparkleFloat {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(0.6) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) scale(1.25) rotate(180deg);
+      }
+    }
+
+    /* Кастомний скролбар */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(201, 123, 132, 0.35);
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body class="flex flex-col justify-between selection:bg-rose-200 selection:text-rose-950">
+
+  <!-- Акварельні живі плями на фоні -->
+  <div class="ambient-blob blob-1"></div>
+  <div class="ambient-blob blob-2"></div>
+  <div class="ambient-blob blob-3"></div>
+
+  <!-- Верхня панель навігації -->
+  <header class="relative z-20 w-full max-w-5xl mx-auto px-4 sm:px-6 pt-5 pb-2 flex flex-wrap items-center justify-between gap-3">
+    <!-- Логотип / Назва вечора -->
+    <div class="flex items-center gap-2.5">
+      <div class="w-9 h-9 rounded-full flex items-center justify-center glass-panel text-lg shadow-sm">
+        🥂
+      </div>
+      <div>
+        <h1 class="font-serif-elegant text-xl sm:text-2xl font-bold tracking-wide leading-none" style="color: var(--text-primary);">
+          Між нами, дівчатами
+        </h1>
+        <p class="text-[11px] sm:text-xs tracking-widest uppercase mt-0.5" style="color: var(--text-muted);">
+          v2_academy • cozy evening
+        </p>
+      </div>
+    </div>
+
+    <!-- Кнопки керування атмосферою, учасницями та улюбленим -->
+    <div class="flex items-center gap-2 sm:gap-2.5">
+      <!-- Кнопка Учасниць (черга ходу) -->
+      <button id="btnPlayers" onclick="openPlayersModal()" class="glass-panel px-3 py-2 rounded-full text-xs sm:text-sm font-medium flex items-center gap-1.5 hover:scale-[1.03] active:scale-95 transition cursor-pointer" title="Додати імена дівчат для черги">
+        <span>👯‍♀️</span>
+        <span id="playersBtnText" class="hidden sm:inline">Черга дівчат</span>
+      </button>
+
+      <!-- Кнопка Улюблених карток -->
+      <button id="btnFavorites" onclick="openFavoritesModal()" class="glass-panel px-3 py-2 rounded-full text-xs sm:text-sm font-medium flex items-center gap-1.5 hover:scale-[1.03] active:scale-95 transition cursor-pointer relative" title="Збережені питання вечора">
+        <span>💖</span>
+        <span class="hidden sm:inline">Збережені</span>
+        <span id="favCountBadge" class="px-1.5 py-0.5 text-[10px] rounded-full font-semibold" style="background: var(--pill-bg); color: var(--accent-rose);">0</span>
+      </button>
+
+      <!-- Перемикач режиму: Ранкова кава / Свічки та вино -->
+      <button id="btnTheme" onclick="toggleTheme()" class="glass-panel px-3 py-2 rounded-full text-xs sm:text-sm font-medium flex items-center gap-1.5 hover:scale-[1.03] active:scale-95 transition cursor-pointer" title="Змінити атмосферу вечора">
+        <span id="themeIcon">🕯️</span>
+        <span id="themeLabel" class="hidden md:inline">Свічки та вино</span>
+      </button>
+
+      <!-- Перемикач ніжного звуку -->
+      <button id="btnSound" onclick="toggleSound()" class="glass-panel w-9 h-9 rounded-full flex items-center justify-center text-sm hover:scale-[1.05] active:scale-95 transition cursor-pointer" title="Звукові ефекти">
+        <span id="soundIcon">🔔</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Основна ігрова зона по центру -->
+  <main class="relative z-10 flex-1 flex flex-col items-center justify-center px-4 py-4 sm:py-6 max-w-3xl mx-auto w-full">
+
+    <!-- Індикатор черги гравчині (якщо введено імена) + Лічильник колоди -->
+    <div class="w-full max-w-lg flex flex-col items-center mb-5 sm:mb-6 gap-2.5">
+      <!-- Бейдж черги -->
+      <div id="turnBanner" class="hidden glass-panel px-4 py-1.5 rounded-full flex items-center gap-2 text-xs sm:text-sm shadow-sm transition-all">
+        <span class="inline-block w-2 h-2 rounded-full animate-pulse" style="background: var(--accent-rose);"></span>
+        <span style="color: var(--text-secondary);">Зараз тягне картку:</span>
+        <strong id="currentPlayerName" class="font-semibold" style="color: var(--accent-rose);">Оля</strong>
+        <button onclick="nextPlayerManual()" class="ml-1 text-[11px] underline opacity-75 hover:opacity-100 cursor-pointer" style="color: var(--text-muted);" title="Передати хід далі">далі →</button>
+      </div>
+
+      <!-- Прогрес колоди -->
+      <div class="flex items-center gap-3 text-xs" style="color: var(--text-muted);">
+        <span>Відкрито: <strong id="openedCount" style="color: var(--text-primary);">0</strong> з <strong id="totalCount" style="color: var(--text-primary);">64</strong></span>
+        <span>•</span>
+        <button onclick="reshuffleDeck()" class="hover:underline flex items-center gap-1 cursor-pointer transition" style="color: var(--accent-rose);">
+          <span>🔀 Перемішати заново</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Контейнер Картки -->
+    <div class="card-stage w-full max-w-[460px] sm:max-w-[500px] my-1">
+      <div class="card-wrapper relative w-full">
+        <!-- Декоративні підкладки стопки карток -->
+        <div class="deck-stack-1"></div>
+        <div class="deck-stack-2"></div>
+
+        <!-- Головна інтерактивна картка -->
+        <div id="mainCard" onclick="handleCardClick()" class="playing-card rounded-[26px] p-7 sm:p-10 min-h-[340px] sm:min-h-[380px] flex flex-col justify-between cursor-pointer select-none">
+          
+          <!-- Верхня частина картки: Категорія / Настрій та Сердечко -->
+          <div class="flex items-center justify-between gap-2 relative z-10">
+            <span id="cardTag" class="px-3.5 py-1 rounded-full text-xs font-medium tracking-wide" style="background: var(--pill-bg); color: var(--accent-rose);">
+              ✨ Початок вечора
+            </span>
+
+            <div class="flex items-center gap-1.5">
+              <span id="cardNumber" class="text-xs font-serif-elegant italic" style="color: var(--text-muted);">
+                #00
+              </span>
+              <button id="btnHeart" onclick="event.stopPropagation(); toggleFavoriteCurrent();" class="w-9 h-9 rounded-full flex items-center justify-center text-lg hover:scale-110 active:scale-90 transition cursor-pointer" style="background: var(--pill-bg);" title="Зберегти в улюблені">
+                🤍
+              </button>
+            </div>
+          </div>
+
+          <!-- Центральний текст питання -->
+          <div class="my-6 sm:my-8 text-center relative z-10 flex-1 flex flex-col items-center justify-center">
+            <p id="cardQuestion" class="font-serif-elegant text-2xl sm:text-[31px] leading-[1.32] font-semibold tracking-tight" style="color: var(--text-primary);">
+              Наливайте улюблений напій, вмощуйтеся зручніше та натисніть на картку, щоб витягнути перше питання ✨
+            </p>
+            <p id="cardSubnote" class="mt-3.5 text-xs sm:text-sm italic font-light max-w-sm" style="color: var(--text-secondary);">
+              Усі питання ретельно перемішані — від ніжних і чуттєвих до смішних про наші будні
+            </p>
+          </div>
+
+          <!-- Нижній декоративний колонтитул картки -->
+          <div class="flex items-center justify-between text-[11px] pt-3 border-t relative z-10" style="border-color: var(--card-border); color: var(--text-muted);">
+            <span class="font-serif-elegant italic text-sm">for our girls' circle</span>
+            <span id="tapHint" class="opacity-80">Натисни на картку або кнопку нижче ✨</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Кнопки дій під карткою -->
+    <div class="mt-7 sm:mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4 w-full max-w-md">
+      <button id="btnDraw" onclick="drawNextCard()" class="btn-primary-soft px-7 py-3.5 rounded-full font-medium text-sm sm:text-base flex items-center gap-2.5 cursor-pointer">
+        <span>✨ Витягнути наступну картку</span>
+      </button>
+
+      <button id="btnCopy" onclick="copyCurrentQuestion()" class="glass-panel px-4 py-3.5 rounded-full text-xs sm:text-sm font-medium flex items-center gap-1.5 hover:scale-[1.03] active:scale-95 transition cursor-pointer" title="Скопіювати питання в чат">
+        <span>📋 В чат</span>
+      </button>
+    </div>
+
+  </main>
+
+  <!-- Акуратний футер -->
+  <footer class="relative z-10 text-center py-4 px-4 text-xs" style="color: var(--text-muted);">
+    <p class="font-serif-elegant italic text-sm sm:text-base">
+      Створено з любов’ю та теплом для найкращої команди дівчат-викладачок 🥂
+    </p>
+  </footer>
+
+  <!-- Спливаюче сповіщення (Toast замість alert) -->
+  <div id="toastBox" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 translate-y-3">
+    <div class="glass-panel px-5 py-2.5 rounded-full shadow-lg text-xs sm:text-sm font-medium flex items-center gap-2" style="color: var(--text-primary); border-color: var(--accent-rose);">
+      <span id="toastIcon">✨</span>
+      <span id="toastMessage">Скопійовано!</span>
+    </div>
+  </div>
+
+  <!-- МОДАЛЬНЕ ВІКНО 1: Налаштування імен дівчат (Черга ходів) -->
+  <div id="playersModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-backdrop">
+    <div class="playing-card rounded-3xl max-w-md w-full p-6 sm:p-7 relative shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-serif-elegant text-2xl font-bold" style="color: var(--text-primary);">
+          👯‍♀️ Хто сьогодні за столом?
+        </h2>
+        <button onclick="closePlayersModal()" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-sm cursor-pointer">✕</button>
+      </div>
+      <p class="text-xs sm:text-sm mb-4 leading-relaxed" style="color: var(--text-secondary);">
+        Впишіть імена учасниць (через кому або з нового рядка), і сайт сам підказуватиме, чия черга тягнути наступну картку. Або залиште поле порожнім, якщо хочете тягнути вільно.
+      </p>
+      <textarea id="playersInput" rows="3" placeholder="Наприклад: Віка, Оля, Аня, Катя, Маша..." class="w-full rounded-2xl p-3.5 text-sm outline-none border transition mb-4" style="background: var(--bg-base); color: var(--text-primary); border-color: var(--card-border);"></textarea>
+      
+      <div class="flex items-center justify-between gap-3">
+        <button onclick="clearPlayers()" class="px-4 py-2.5 rounded-full text-xs font-medium glass-panel cursor-pointer" style="color: var(--text-muted);">
+          Очистити
+        </button>
+        <button onclick="savePlayers()" class="btn-primary-soft px-6 py-2.5 rounded-full text-xs sm:text-sm font-medium cursor-pointer">
+          Зберегти список ✨
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- МОДАЛЬНЕ ВІКНО 2: Збережені (Улюблені) питання вечора -->
+  <div id="favoritesModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-backdrop">
+    <div class="playing-card rounded-3xl max-w-lg w-full p-6 sm:p-7 relative shadow-2xl max-h-[82vh] flex flex-col">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="font-serif-elegant text-2xl font-bold" style="color: var(--text-primary);">
+          💖 Найтепліші картки вечора
+        </h2>
+        <button onclick="closeFavoritesModal()" class="w-8 h-8 rounded-full glass-panel flex items-center justify-center text-sm cursor-pointer">✕</button>
+      </div>
+      <p class="text-xs mb-4" style="color: var(--text-secondary);">
+        Тут зберігаються питання, які вам найбільше відгукнулися або розсмішили до сліз.
+      </p>
+
+      <div id="favoritesList" class="flex-1 overflow-y-auto space-y-2.5 pr-1 my-1">
+        <!-- Сюди рендеряться збережені картки -->
+      </div>
+
+      <div class="mt-4 pt-3 border-t flex justify-between items-center" style="border-color: var(--card-border);">
+        <button onclick="copyAllFavorites()" class="text-xs font-medium underline cursor-pointer" style="color: var(--accent-rose);">
+          Скопіювати всі списком
+        </button>
+        <button onclick="closeFavoritesModal()" class="btn-primary-soft px-5 py-2 rounded-full text-xs font-medium cursor-pointer">
+          Повернутися до гри
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * КОЛОДА ПИТАНЬ (64 унікальні картки для дівчат-викладачок)
+     * Категорії:
+     * - "✨ Ніжність і душа" (глибокі, чуттєві, теплі питання про себе та внутрішній світ)
+     * - "🥂 Про нас, дівчаток" (жіночність, стосунки, маленькі радощі, мрії)
+     * - "😂 Викладацький вайб" (смішні реалії уроків, Zoom, учнів і вигорання)
+     * - "🌶️ З перчинкою" (відверті, грайливі та несподівані питання)
+     * - "🪄 Ізюм-картка" (особливі міні-тости, компліменти по колу або маленькі ритуали вечора)
+     */
+    const ALL_QUESTIONS = [
+      // ✨ Ніжність і душа
+      { tag: "✨ Ніжність і душа", text: "Який момент цього року змусив тебе по-справжньому пишатися собою, навіть якщо ти нікому про це не розповідала?", sub: "Давай без скромності — сьогодні можна і треба себе хвалити." },
+      { tag: "✨ Ніжність і душа", text: "Що зараз найбільше наповнює твою внутрішню батарейку, коли здається, що сил залишилося на 5%?", sub: "" },
+      { tag: "✨ Ніжність і душа", text: "Яку рису в собі ти раніше вважала недоліком, а з роками зрозуміла, що це твоя суперсила?", sub: "" },
+      { tag: "✨ Ніжність і душа", text: "Якби ти могла обійняти себе п’ятирічної давності й сказати лише одне речення — що б це було?", sub: "" },
+      { tag: "✨ Ніжність і душа", text: "Який комплімент від іншої людини закарбувався у твоїй пам’яті на роки?", sub: "" },
+      { tag: "✨ Ніжність і душа", text: "Про що ти зараз мрієш пошепки — так, що навіть трохи страшно вимовити це вголос?", sub: "" },
+      { tag: "✨ Ніжність і душа", text: "Яке маленьке щоденне правило або ритуал робить твій день набагато ніжнішим і спокійнішим?", sub: "" },
+      { tag: "✨ Ніжність і душа", text: "За що ти хочеш щиро подякувати собі за останні кілька місяців?", sub: "" },
+      { tag: "✨ Ніжність і душа", text: "Який запах, звук чи картинка миттєво повертають тебе в найщасливіший спогад дитинства або юності?", sub: "" },
+      { tag: "✨ Ніжність і душа", text: "Чого тобі зараз найбільше хочеться дозволити собі без жодного почуття провини?", sub: "" },
+      { tag: "✨ Ніжність і душа", text: "Як виглядає твій ідеальний «повільний ранок», коли нікуди не треба поспішати й немає жодного уроку в розкладі?", sub: "" },
+      { tag: "✨ Ніжність і душа", text: "Яка книга, фільм або пісня останнім часом влучили прямо в серце?", sub: "" },
+      { tag: "✨ Ніжність і душа", text: "Що для тебе означає відчуття «я вдома» — це про місце, людей чи внутрішній стан?", sub: "" },
+      { tag: "✨ Ніжність і душа", text: "Яку одну річ або звичку ти хочеш залишити в цьому році й точно не брати із собою далі?", sub: "" },
+
+      // 🥂 Про нас, дівчаток
+      { tag: "🥂 Про нас, дівчаток", text: "Яка твоя найбезглуздіша, але найулюбленіша імпульсивна покупка, про яку ти зовсім не шкодуєш?", sub: "Той самий випадок чистої retail therapy!" },
+      { tag: "🥂 Про нас, дівчаток", text: "Якби на один вечір ми всі опинилися в будь-якому місті світу з безлімітною карткою — куди б ми полетіли і що б робили першим ділом?", sub: "" },
+      { tag: "🥂 Про нас, дівчаток", text: "Який у тебе головний «червоний прапорець» у людях, після якого ти миттєво втрачаєш інтерес до спілкування?", sub: "" },
+      { tag: "🥂 Про нас, дівчаток", text: "А який «зелений прапорець» у чоловіках або подругах миттєво викликає в тебе тепло й довіру?", sub: "" },
+      { tag: "🥂 Про нас, дівчаток", text: "Який фільм або серіал ти готова передивлятися нескінченно, коли на душі осінь?", sub: "" },
+      { tag: "🥂 Про нас, дівчаток", text: "Твій ідеальний напій та десерт для вечора, коли світ за вікном може почекати?", sub: "" },
+      { tag: "🥂 Про нас, дівчаток", text: "Яка пісня змушує тебе танцювати, навіть якщо ти просто миєш посуд на кухні?", sub: "" },
+      { tag: "🥂 Про нас, дівчаток", text: "Якби про твою нинішню осінь знімали кіно, як би воно називалося і хто б грав головну роль?", sub: "" },
+      { tag: "🥂 Про нас, дівчаток", text: "Який найдивніший або найсмішніший подарунок тобі колись дарували?", sub: "" },
+      { tag: "🥂 Про нас, дівчаток", text: "Що в жіночій дружбі ти цінуєш найбільше?", sub: "" },
+      { tag: "🥂 Про нас, дівчаток", text: "Яке маленьке бажання ти можеш виконати для себе вже на цих вихідних?", sub: "" },
+      { tag: "🥂 Про нас, дівчаток", text: "Якби ти могла відкрити власну маленьку затишну справу «для душі» (не пов’язану з мовами) — що б це було?", sub: "" },
+
+      // 😂 Викладацький вайб
+      { tag: "😂 Викладацький вайб", text: "Яка найсмішніша або найабсурдніша відмазка учня за незроблену домашку тобі запам’яталася?", sub: "Класика жанру, яку не вигадає жоден сценарист." },
+      { tag: "😂 Викладацький вайб", text: "Опиши свій стан за 5 хвилин до першого ранкового уроку одним англійським або німецьким словом (чи мемом)!", sub: "" },
+      { tag: "😂 Викладацький вайб", text: "Чи був у тебе випадок, коли на онлайн-уроці зверху ти була «леді-професіонал», а знизу — піжама і шерстяні шкарпетки?", sub: "Зізнавайся чесно, тут усі свої!" },
+      { tag: "😂 Викладацький вайб", text: "Яка фраза чи помилка учнів настільки в’їлася тобі в мозок, що ти іноді ловиш себе на бажанні так сказати в житті?", sub: "" },
+      { tag: "😂 Викладацький вайб", text: "Найкумедніший курйоз із мікрофоном, камерою, котами чи домашніми на фоні під час заняття?", sub: "" },
+      { tag: "😂 Викладацький вайб", text: "Коли учень пише о 23:45 «Я завтра не зможу» без «привіт» — яка твоя перша внутрішня реакція без цензури?", sub: "Можна відповісти обличчям замість слів 😄" },
+      { tag: "😂 Викладацький вайб", text: "Яку суперздібність ти хотіла б мати під час уроків (наприклад, телепатично завантажувати таблицю неправильних дієслів у голову)?", sub: "" },
+      { tag: "😂 Викладацький вайб", text: "Який тип учнів ти обожнюєш найбільше — з ким урок пролітає як 10 хвилин за кавою?", sub: "" },
+      { tag: "😂 Викладацький вайб", text: "Чи траплялося тобі на автоматі перейти на англійську/німецьку з касиром у магазині, таксистом чи баристою?", sub: "" },
+      { tag: "😂 Викладацький вайб", text: "Якби наші викладацькі будні перетворили на ситком на кшталт «Друзів» або «Офісу», якою була б твоя коронна фраза в кожній серії?", sub: "" },
+      { tag: "😂 Викладацький вайб", text: "Що найкраще рятує твій голос і нерви після 5–6 уроків поспіль?", sub: "" },
+      { tag: "😂 Викладацький вайб", text: "Яке слово в англійській чи німецькій мові бісить тебе своєю вимовою або правописом навіть зараз?", sub: "" },
+      { tag: "😂 Викладацький вайб", text: "Найкращий комплімент або повідомлення від учня чи батьків, від якого хотілося літати?", sub: "" },
+      { tag: "😂 Викладацький вайб", text: "Уяви, що тобі дали цілий тиждень оплачуваної відпустки без месенджерів і Zoom — як проведеш перші 24 години?", sub: "" },
+
+      // 🌶️ З перчинкою
+      { tag: "🌶️ З перчинкою", text: "Який твій головний «guilty pleasure» (маленька слабкість, у якій трохи ніяково зізнаватися, але вона приносить море кайфу)?", sub: "" },
+      { tag: "🌶️ З перчинкою", text: "Найсміливіший або найспонтанніший вчинок у твоєму житті, від якого досі мурашки по шкірі?", sub: "" },
+      { tag: "🌶️ З перчинкою", text: "Яке правило «хорошої дівчинки» ти з величезним задоволенням порушила (або мрієш порушити)?", sub: "" },
+      { tag: "🌶️ З перчинкою", text: "Найнезручніше або найкумедніше побачення в твоєму житті, яке зараз згадується як готовий стендап?", sub: "" },
+      { tag: "🌶️ З перчинкою", text: "Що в чоловіках або у флірті для тебе діє безвідмовно, як магія?", sub: "" },
+      { tag: "🌶️ З перчинкою", text: "Якби ніхто ніколи не дізнався і не засудив — що б ти зробила вже цього місяця?", sub: "" },
+      { tag: "🌶️ З перчинкою", text: "Яка твоя таємна фантазія про ідеальний відпочинок (без дедлайнів, телефонів і обов’язків)?", sub: "" },
+      { tag: "🌶️ З перчинкою", text: "Чи була в тебе колись закоханість у кіногероя, актора або персонажа книги, за яку досі трохи соромно?", sub: "" },
+      { tag: "🌶️ З перчинкою", text: "Який комплімент про твою зовнішність або енергетику змушує тебе розквітати миттєво?", sub: "" },
+      { tag: "🌶️ З перчинкою", text: "На що ти здатна витратити гроші не замислюючись, навіть якщо розум каже «почекай до зарплати»?", sub: "" },
+
+      // 🪄 Ізюм-картка (Інтерактивні тости та моменти єднання)
+      { tag: "🪄 Ізюм-картка", text: "ТОСТ ВЕЧОРА 🥂 Піднімімо келихи (або чашки!) за те, що вийшло в кожної з нас цього року, навіть якщо воно здавалося дрібницею!", sub: "Кожна по колу називає 1 маленьку перемогу й робить ковток ✨", special: true },
+      { tag: "🪄 Ізюм-картка", text: "ХВИЛИНКА ТЕПЛА 💌 Скажи по одному щирому компліменту дівчині, яка тягнула картку перед тобою, і тій, хто тягне наступною!", sub: "Нехай у кожної сьогодні засяють очі 💖", special: true },
+      { tag: "🪄 Ізюм-картка", text: "ВГАДАЙ ПО ЕМОДЗІ 🎭 Опиши свій сьогоднішній настрій трьома емодзі в нашому чаті, а решта дівчат мають вгадати розшифровку!", sub: "Хто вгадає найточніше — отримує оплески команди 👏", special: true },
+      { tag: "🪄 Ізюм-картка", text: "КАПСУЛА БАЖАНЬ ✨ Озвуч одне своє бажання на наступний рік, а ми всі разом хором скажемо: «Нехай здійсниться красиво і легко!»", sub: "Енергія жіночого кола працює безвідмовно 🪄", special: true },
+      { tag: "🪄 Ізюм-картка", text: "ПЕРЕКЛАДАЧ ДУШІ 🌍 Переклади фразу «Я сьогодні королева, мені можна все» своєю улюбленою інтонацією англійською або німецькою!", sub: "Можна додати трохи драматизму чи британського акценту 👑", special: true },
+      { tag: "🪄 Ізюм-картка", text: "СМАЧНИЙ АСОЦІАТИВНИЙ РЯД 🍓 Якби кожна з присутніх дівчат була десертом або напоєм — яким саме і чому?", sub: "Роздай «смачні» титули всім учасницям дзвінка 🥂", special: true },
+      { tag: "🪄 Ізюм-картка", text: "СКРІНШОТ НА ПАМ’ЯТЬ 📸 Час зробити спільне тепле фото екрана з келихами/чашками та усмішками для нашого секретного архіву!", sub: "На рахунок три: 1... 2... 3... ✨", special: true },
+      { tag: "🪄 Ізюм-картка", text: "ПРАВИЛО ОДНОГО СЛОВА 💫 Опиши нашу команду вчителів одним теплим словом, яке першим спадає на думку прямо зараз.", sub: "", special: true },
+
+      // Додаткові життєві та глибокі питання для великої колоди
+      { tag: "✨ Ніжність і душа", text: "Яка порада, яку ти часто даєш своїм учням або подругам, найбільше потрібна зараз тобі самій?", sub: "" },
+      { tag: "🥂 Про нас, дівчаток", text: "Який аромат парфумів або свічок асоціюється в тебе із затишком, впевненістю та святом?", sub: "" },
+      { tag: "😂 Викладацький вайб", text: "Якби ти могла додати в правила нашої школи один абсолютно жартівливий пункт — що б це було?", sub: "Наприклад: «За запізнення на 5 хвилин — комплімент викладачу» 😄" },
+      { tag: "✨ Ніжність і душа", text: "У які моменти ти відчуваєш себе максимально живою, справжньою і на своєму місці?", sub: "" },
+      { tag: "🥂 Про нас, дівчаток", text: "Яка традиція з подругами або сім’єю гріє тебе найбільше в холодну пору року?", sub: "" },
+      { tag: "🌶️ З перчинкою", text: "Якби твоє альтер-его мало окреме ім’я та характер — якою б вона була?", sub: "" }
+    ];
+
+    // Стан додатка
+    let deck = [];
+    let currentIndex = -1;
+    let favorites = [];
+    let players = [];
+    let currentPlayerIdx = 0;
+    let soundEnabled = true;
+    let isWineMode = false;
+
+    // Ініціалізація при завантаженні сторінки
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSavedState();
+      initDeck();
+      updateUI();
+    });
+
+    // Завантаження збережених налаштувань з localStorage (якщо є)
+    function loadSavedState() {
+      try {
+        const savedFavs = localStorage.getItem('v2_girls_favorites');
+        if (savedFavs) favorites = JSON.parse(savedFavs);
+
+        const savedPlayers = localStorage.getItem('v2_girls_players');
+        if (savedPlayers) {
+          players = JSON.parse(savedPlayers);
+          document.getElementById('playersInput').value = players.join(', ');
+        }
+
+        const savedTheme = localStorage.getItem('v2_girls_theme');
+        if (savedTheme === 'wine') {
+          isWineMode = true;
+          document.body.classList.add('wine-mode');
+          updateThemeButton();
+        }
+      } catch (e) {
+        console.warn('LocalStorage недоступний:', e);
+      }
+    }
+
+    // Алгоритм перемішування Фішера-Єйтса
+    function shuffleArray(array) {
+      const copy = [...array];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    // Ініціалізація та перемішування колоди
+    function initDeck() {
+      deck = shuffleArray(ALL_QUESTIONS.map((item, idx) => ({ ...item, id: idx + 1 })));
+      currentIndex = -1;
+      document.getElementById('totalCount').textContent = deck.length;
+      document.getElementById('openedCount').textContent = '0';
+    }
+
+    // Перемішати заново по кнопці
+    function reshuffleDeck() {
+      playSoftChime('shuffle');
+      initDeck();
+      const cardEl = document.getElementById('mainCard');
+      cardEl.classList.remove('special-card-glow');
+      cardEl.classList.add('card-draw-out');
+
+      setTimeout(() => {
+        document.getElementById('cardTag').textContent = '🔀 Колоду перемішано';
+        document.getElementById('cardNumber').textContent = '#00';
+        document.getElementById('cardQuestion').textContent = 'Усі 64 картки знову перемішані! Натискайте, щоб витягнути нове питання ✨';
+        document.getElementById('cardSubnote').textContent = 'Нехай попадеться саме те, що потрібно вашому настрою';
+        document.getElementById('btnHeart').textContent = '🤍';
+
+        cardEl.classList.remove('card-draw-out');
+        cardEl.classList.add('card-draw-in');
+        setTimeout(() => cardEl.classList.remove('card-draw-in'), 650);
+      }, 280);
+
+      showToast('🔀', 'Колоду ретельно перемішано!');
+    }
+
+    // Клік по самій картці
+    function handleCardClick() {
+      drawNextCard();
+    }
+
+    // Витягнути наступну картку
+    function drawNextCard() {
+      // Якщо дійшли до кінця колоди — автоматично перемішуємо заново
+      if (currentIndex + 1 >= deck.length) {
+        showToast('🥂', 'Ви пройшли всю колоду! Перемішуємо заново...');
+        initDeck();
+      }
+
+      currentIndex++;
+      const cardData = deck[currentIndex];
+      const cardEl = document.getElementById('mainCard');
+
+      // Звук витягування картки
+      playSoftChime(cardData.special ? 'special' : 'draw');
+
+      // Анімація зникнення старої картки
+      cardEl.classList.add('card-draw-out');
+
+      setTimeout(() => {
+        // Оновлюємо вміст картки
+        document.getElementById('cardTag').textContent = cardData.tag;
+        document.getElementById('cardNumber').textContent = `#${String(currentIndex + 1).padStart(2, '0')}`;
+        document.getElementById('cardQuestion').textContent = cardData.text;
+
+        const subEl = document.getElementById('cardSubnote');
+        if (cardData.sub) {
+          subEl.textContent = cardData.sub;
+          subEl.classList.remove('hidden');
+        } else {
+          subEl.textContent = '';
+          subEl.classList.add('hidden');
+        }
+
+        // Перевірка на "Ізюм-картку"
+        if (cardData.special) {
+          cardEl.classList.add('special-card-glow');
+          spawnSparkles();
+        } else {
+          cardEl.classList.remove('special-card-glow');
+        }
+
+        // Оновлюємо стан сердечка
+        const isFav = favorites.some(f => f.id === cardData.id);
+        document.getElementById('btnHeart').textContent = isFav ? '💖' : '🤍';
+
+        // Оновлюємо лічильник та чергу учасниць
+        document.getElementById('openedCount').textContent = currentIndex + 1;
+        document.getElementById('tapHint').textContent = 'Натисни для наступної картки →';
+
+        if (players.length > 0 && currentIndex > 0) {
+          currentPlayerIdx = (currentPlayerIdx + 1) % players.length;
+          updateTurnBanner();
+        }
+
+        // Анімація появи нової картки
+        cardEl.classList.remove('card-draw-out');
+        cardEl.classList.add('card-draw-in');
+        setTimeout(() => cardEl.classList.remove('card-draw-in'), 650);
+      }, 250);
+    }
+
+    // Спалах ніжних зірочок для особливої картки
+    function spawnSparkles() {
+      const emojis = ['✨', '🥂', '💖', '🌸', '🪄'];
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+
+      for (let i = 0; i < 16; i++) {
+        const span = document.createElement('span');
+        span.className = 'sparkle-particle text-xl';
+        span.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        const angle = (Math.PI * 2 * i) / 16;
+        const distance = 90 + Math.random() * 140;
+        span.style.left = `${centerX}px`;
+        span.style.top = `${centerY}px`;
+        span.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+        span.style.setProperty('--ty', `${Math.sin(angle) * distance - 30}px`);
+        document.body.appendChild(span);
+        setTimeout(() => span.remove(), 1450);
+      }
+    }
+
+    // Зберегти / видалити поточну картку з улюблених
+    function toggleFavoriteCurrent() {
+      if (currentIndex < 0) {
+        showToast('✨', 'Спочатку витягніть першу картку!');
+        return;
+      }
+      const cardData = deck[currentIndex];
+      const existingIdx = favorites.findIndex(f => f.id === cardData.id);
+
+      if (existingIdx > -1) {
+        favorites.splice(existingIdx, 1);
+        document.getElementById('btnHeart').textContent = '🤍';
+        showToast('🤍', 'Прибрано зі збережених');
+      } else {
+        favorites.push(cardData);
+        document.getElementById('btnHeart').textContent = '💖';
+        playSoftChime('fav');
+        showToast('💖', 'Збережено в улюблені картки вечора!');
+      }
+
+      saveFavoritesToStorage();
+      updateUI();
+    }
+
+    function saveFavoritesToStorage() {
+      try {
+        localStorage.setItem('v2_girls_favorites', JSON.stringify(favorites));
+      } catch (e) {}
+    }
+
+    // Скопіювати поточне питання в буфер обміну (для надсилання в чат Zoom/Telegram)
+    function copyCurrentQuestion() {
+      if (currentIndex < 0) {
+        showToast('✨', 'Спочатку відкрийте першу картку!');
+        return;
+      }
+      const cardData = deck[currentIndex];
+      const textToCopy = `${cardData.tag}\n«${cardData.text}»${cardData.sub ? `\n(${cardData.sub})` : ''}`;
+      copyToClipboardFallback(textToCopy);
+      showToast('📋', 'Питання скопійовано — можна вставляти в чат!');
+    }
+
+    function copyAllFavorites() {
+      if (favorites.length === 0) {
+        showToast('🤍', 'Список збережених поки порожній');
+        return;
+      }
+      const text = '💖 Наші улюблені картки вечора:\n\n' +
+        favorites.map((f, i) => `${i + 1}. [${f.tag}] ${f.text}`).join('\n\n');
+      copyToClipboardFallback(text);
+      showToast('📋', 'Усі збережені питання скопійовано!');
+    }
+
+    // Надійне копіювання тексту (сумісне з iframe)
+    function copyToClipboardFallback(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+      } catch (err) {
+        console.error('Не вдалося скопіювати:', err);
+      }
+      document.body.removeChild(textarea);
+    }
+
+    // Перемикач теми: "Ранкова кава" vs "Свічки та вино"
+    function toggleTheme() {
+      isWineMode = !isWineMode;
+      document.body.classList.toggle('wine-mode', isWineMode);
+      updateThemeButton();
+      playSoftChime('theme');
+      try {
+        localStorage.setItem('v2_girls_theme', isWineMode ? 'wine' : 'light');
+      } catch (e) {}
+      showToast(isWineMode ? '🕯️' : '🥐', isWineMode ? 'Увімкнено атмосферу «Свічки та вино»' : 'Увімкнено атмосферу «Ранкова кава»');
+    }
+
+    function updateThemeButton() {
+      document.getElementById('themeIcon').textContent = isWineMode ? '🥐' : '🕯️';
+      document.getElementById('themeLabel').textContent = isWineMode ? 'Світлий режим' : 'Свічки та вино';
+    }
+
+    // Управління учасницями (черга)
+    function openPlayersModal() {
+      const modal = document.getElementById('playersModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closePlayersModal() {
+      const modal = document.getElementById('playersModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function savePlayers() {
+      const raw = document.getElementById('playersInput').value;
+      players = raw
+        .split(/[\n,]+/)
+        .map(name => name.trim())
+        .filter(name => name.length > 0);
+      currentPlayerIdx = 0;
+      try {
+        localStorage.setItem('v2_girls_players', JSON.stringify(players));
+      } catch (e) {}
+      updateUI();
+      closePlayersModal();
+      showToast('👯‍♀️', players.length > 0 ? `Додано ${players.length} учасниць!` : 'Режим вільної черги увімкнено');
+    }
+
+    function clearPlayers() {
+      document.getElementById('playersInput').value = '';
+      players = [];
+      currentPlayerIdx = 0;
+      try {
+        localStorage.removeItem('v2_girls_players');
+      } catch (e) {}
+      updateUI();
+      closePlayersModal();
+      showToast('✨', 'Імена очищено');
+    }
+
+    function nextPlayerManual() {
+      if (players.length === 0) return;
+      currentPlayerIdx = (currentPlayerIdx + 1) % players.length;
+      updateTurnBanner();
+    }
+
+    function updateTurnBanner() {
+      const banner = document.getElementById('turnBanner');
+      if (players.length > 0) {
+        banner.classList.remove('hidden');
+        document.getElementById('currentPlayerName').textContent = players[currentPlayerIdx];
+        document.getElementById('playersBtnText').textContent = `Дівчата (${players.length})`;
+      } else {
+        banner.classList.add('hidden');
+        document.getElementById('playersBtnText').textContent = 'Черга дівчат';
+      }
+    }
+
+    // Модальне вікно улюблених карток
+    function openFavoritesModal() {
+      renderFavoritesList();
+      const modal = document.getElementById('favoritesModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeFavoritesModal() {
+      const modal = document.getElementById('favoritesModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function renderFavoritesList() {
+      const container = document.getElementById('favoritesList');
+      if (favorites.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 opacity-75">
+            <p class="text-2xl mb-2">🤍</p>
+            <p class="text-sm">Поки немає збережених карток.</p>
+            <p class="text-xs mt-1">Натискайте на сердечко у верхньому куті картки, щоб зберегти найкращі моменти!</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = favorites.map(item => `
+        <div class="glass-panel rounded-2xl p-3.5 flex items-start justify-between gap-3">
+          <div>
+            <span class="text-[11px] font-medium px-2.5 py-0.5 rounded-full inline-block mb-1.5" style="background: var(--pill-bg); color: var(--accent-rose);">
+              ${item.tag}
+            </span>
+            <p class="font-serif-elegant text-lg font-semibold leading-snug" style="color: var(--text-primary);">
+              ${item.text}
+            </p>
+          </div>
+          <button onclick="removeFavoriteById(${item.id})" class="text-xs opacity-60 hover:opacity-100 p-1 cursor-pointer" title="Видалити">✕</button>
+        </div>
+      `).join('');
+    }
+
+    function removeFavoriteById(id) {
+      favorites = favorites.filter(f => f.id !== id);
+      saveFavoritesToStorage();
+      renderFavoritesList();
+      updateUI();
+      if (currentIndex >= 0 && deck[currentIndex].id === id) {
+        document.getElementById('btnHeart').textContent = '🤍';
+      }
+    }
+
+    function updateUI() {
+      document.getElementById('favCountBadge').textContent = favorites.length;
+      updateTurnBanner();
+    }
+
+    // Ніжні звукові ефекти через Tone.js (без зовнішніх аудіофайлів)
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('soundIcon').textContent = soundEnabled ? '🔔' : '🔕';
+      showToast(soundEnabled ? '🔔' : '🔕', soundEnabled ? 'Ніжний звук увімкнено' : 'Звук вимкнено');
+    }
+
+    function playSoftChime(type) {
+      if (!soundEnabled || typeof Tone === 'undefined') return;
+      try {
+        if (Tone.context.state !== 'running') {
+          Tone.start();
+        }
+        const synth = new Tone.PolySynth(Tone.Synth, {
+          oscillator: { type: 'sine' },
+          envelope: { attack: 0.03, decay: 0.35, sustain: 0.05, release: 0.8 },
+          volume: -16
+        }).toDestination();
+
+        const now = Tone.now();
+        if (type === 'special') {
+          synth.triggerAttackRelease(['E5', 'G#5', 'B5', 'E6'], '8n', now);
+        } else if (type === 'fav') {
+          synth.triggerAttackRelease(['C5', 'G5'], '16n', now);
+        } else if (type === 'shuffle') {
+          synth.triggerAttackRelease(['D5', 'F#5', 'A5'], '16n', now);
+        } else {
+          synth.triggerAttackRelease(['A4', 'E5'], '16n', now);
+        }
+      } catch (e) {
+        // Ігноруємо помилки автоплею, якщо браузер ще не отримав взаємодію
+      }
+    }
+
+    // Відображення спливаючого сповіщення (Toast)
+    let toastTimer = null;
+    function showToast(icon, msg) {
+      const box = document.getElementById('toastBox');
+      document.getElementById('toastIcon').textContent = icon;
+      document.getElementById('toastMessage').textContent = msg;
+
+      box.classList.remove('opacity-0', 'translate-y-3');
+      box.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        box.classList.add('opacity-0', 'translate-y-3');
+        box.classList.remove('opacity-100', 'translate-y-0');
+      }, 2500);
+    }
+  </script>
+</body>
+</html>
